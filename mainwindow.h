@@ -40,6 +40,7 @@ private slots:  // ← ДОБАВЛЯЕМ ЭТОТ РАЗДЕЛ
     void setCircleTool();
     void setRectangleTool();
     void setTriangleTool();
+    void changeColor();
 };
 
 

@@ -5,6 +5,7 @@
 #include "triangle.h"
 #include <QPainter>
 #include <QToolBar>
+#include <QColorDialog>
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -46,6 +47,10 @@ void MainWindow::createToolbar() {
     // Разделитель
     toolbar->addSeparator();
 
+    QAction* colorAction = toolbar->addAction("🎨");
+    colorAction->setToolTip("Изменить цвет");
+    connect(colorAction, &QAction::triggered, this, &MainWindow::changeColor);
+
     // Кнопка удаления
     QAction* deleteAction = toolbar->addAction("Удалить");
     deleteAction->setToolTip("Удалить выделенные фигуры");
@@ -78,6 +83,10 @@ void MainWindow::createMenu() {
 
     // Меню "Правка"
     QMenu* editMenu = menuBar->addMenu("Правка");
+
+    QAction* colorAction = editMenu->addAction("Изменить цвет...");
+    connect(colorAction, &QAction::triggered, this, &MainWindow::changeColor);
+
     QAction* deleteAction = editMenu->addAction("Удалить выделенные");
     connect(deleteAction, &QAction::triggered, [this]() {
         // Удаляем выделенные фигуры
@@ -104,7 +113,22 @@ void MainWindow::setTriangleTool() {
     currentTool = TRIANGLE;
 }
 
-// Обновляем paintEvent для отображения текущего инструмента:
+void MainWindow::changeColor() {
+    QColor newColor = QColorDialog::getColor(currentColor, this, "Выберите цвет фигур");
+
+    if (newColor.isValid()) {
+        currentColor = newColor;
+
+        // Меняем цвет выделенных фигур
+        for (int i = 0; i < storage.getCount(); i++) {
+            if (storage.getObject(i)->isSelected()) {
+                storage.getObject(i)->setColor(currentColor);
+            }
+        }
+        update();
+    }
+}
+
 void MainWindow::paintEvent(QPaintEvent *event) {
     Q_UNUSED(event);
 
@@ -126,7 +150,8 @@ void MainWindow::paintEvent(QPaintEvent *event) {
     }
 
     painter.drawText(10, 20, QString("Инструмент: %1").arg(toolName));
-    painter.drawText(10, 40, QString("Фигур: %1").arg(storage.getCount()));
+    painter.drawText(10, 40, QString("Цвет: %1").arg(currentColor.name()));
+    painter.drawText(10, 60, QString("Фигур: %1").arg(storage.getCount()));
 }
 
 
@@ -204,13 +229,13 @@ void MainWindow::keyReleaseEvent(QKeyEvent *event) {
 void MainWindow::createShape(int x, int y) {
     switch (currentTool) {
     case CIRCLE:
-        storage.add(new Circle(x, y, 20));
+        storage.add(new Circle(x, y, 20, currentColor));
         break;
     case RECTANGLE:
-        storage.add(new Rectangle(x, y, 40, 30));
+        storage.add(new Rectangle(x, y, 40, 30, currentColor));
         break;
     case TRIANGLE:
-        storage.add(new Triangle(x, y, 30));
+        storage.add(new Triangle(x, y, 30, currentColor));
         break;
     }
 }
