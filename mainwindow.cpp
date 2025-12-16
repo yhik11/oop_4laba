@@ -194,7 +194,9 @@ void MainWindow::keyPressEvent(QKeyEvent *event) {
             }
         }
         update();
-    } else {
+    }
+
+    else {
         // Управление стрелками для перемещения фигур
         int dx = 0, dy = 0;
         switch (event->key()) {
@@ -233,6 +235,17 @@ void MainWindow::keyPressEvent(QKeyEvent *event) {
             update();
         }
     }
+    if (event->key() == Qt::Key_Plus || event->key() == Qt::Key_Minus) {
+        float scale = (event->key() == Qt::Key_Plus) ? 1.1f : 0.9f;
+
+        for (int i = 0; i < storage.getCount(); i++) {
+            Shape* shape = storage.getObject(i);
+            if (shape->isSelected()) {
+                shape->resize(scale);
+            }
+        }
+        update();
+    }
 }
 
 
@@ -264,6 +277,8 @@ void MainWindow::paintEvent(QPaintEvent *event) {
     painter.drawText(width() - 250, 40, "Стрелки - перемещение");
     painter.drawText(width() - 250, 60, "Delete - удалить");
     painter.drawText(width() - 250, 80, "Ctrl+клик - несколько");
+
+    painter.drawText(width() - 250, 100, "+/- - изменить размер");
 }
 
 void MainWindow::keyReleaseEvent(QKeyEvent *event) {

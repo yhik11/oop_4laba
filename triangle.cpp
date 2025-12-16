@@ -27,3 +27,11 @@ bool Triangle::contains(int mx, int my) const {
 QRect Triangle::getBounds() const {
     return QRect(x - size/2, y - size/2, size, size);
 }
+
+
+void Triangle::resize(float scale) {
+    size = std::max(10, std::min(200, (int)(size * scale)));
+}
+
+
+

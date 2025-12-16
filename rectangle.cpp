@@ -17,3 +17,8 @@ bool Rectangle::contains(int mx, int my) const {
 QRect Rectangle::getBounds() const {
     return QRect(x - width/2, y - height/2, width, height);
 }
+
+void Rectangle::resize(float scale) {
+    width = std::max(10, std::min(300, (int)(width * scale)));
+    height = std::max(10, std::min(300, (int)(height * scale)));
+}

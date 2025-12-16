@@ -20,3 +20,7 @@ bool Circle::contains(int mx, int my) const {
 QRect Circle::getBounds() const {
     return QRect(x - radius, y - radius, radius * 2, radius * 2);
 }
+
+void Circle::resize(float scale) {
+    radius = std::max(5, std::min(200, (int)(radius * scale)));
+}
