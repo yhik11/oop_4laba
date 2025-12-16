@@ -129,30 +129,7 @@ void MainWindow::changeColor() {
     }
 }
 
-void MainWindow::paintEvent(QPaintEvent *event) {
-    Q_UNUSED(event);
 
-    QPainter painter(this);
-    painter.setRenderHint(QPainter::Antialiasing);
-
-    // Отрисовываем все фигуры
-    for (int i = 0; i < storage.getCount(); i++) {
-        storage.getObject(i)->draw(painter);
-    }
-
-    // Информационная панель
-    painter.setPen(Qt::black);
-    QString toolName;
-    switch (currentTool) {
-    case CIRCLE: toolName = "Круг"; break;
-    case RECTANGLE: toolName = "Прямоугольник"; break;
-    case TRIANGLE: toolName = "Треугольник"; break;
-    }
-
-    painter.drawText(10, 20, QString("Инструмент: %1").arg(toolName));
-    painter.drawText(10, 40, QString("Цвет: %1").arg(currentColor.name()));
-    painter.drawText(10, 60, QString("Фигур: %1").arg(storage.getCount()));
-}
 
 
 
@@ -228,15 +205,65 @@ void MainWindow::keyPressEvent(QKeyEvent *event) {
         }
 
         if (dx != 0 || dy != 0) {
-            // Перемещаем все выделенные фигуры
+            QRect area = this->rect();  // Границы окна
+
+            // Перемещаем все выделенные фигуры с проверкой границ
             for (int i = 0; i < storage.getCount(); i++) {
-                if (storage.getObject(i)->isSelected()) {
-                    storage.getObject(i)->move(dx, dy);
+                Shape* shape = storage.getObject(i);
+                if (shape->isSelected()) {
+                    // Получаем границы фигуры
+                    QRect bounds = shape->getBounds();
+
+                    // Проверяем, не выйдет ли фигура за границы
+                    bool canMove = true;
+
+                    // Создаем "призрачные" границы после перемещения
+                    QRect newBounds = bounds.translated(dx, dy);
+
+                    // Проверяем, что фигура полностью внутри окна
+                    if (!area.contains(newBounds)) {
+                        canMove = false;
+                    }
+
+                    if (canMove) {
+                        shape->move(dx, dy);
+                    }
                 }
             }
             update();
         }
     }
+}
+
+
+void MainWindow::paintEvent(QPaintEvent *event) {
+    Q_UNUSED(event);
+
+    QPainter painter(this);
+    painter.setRenderHint(QPainter::Antialiasing);
+
+    // Отрисовываем все фигуры
+    for (int i = 0; i < storage.getCount(); i++) {
+        storage.getObject(i)->draw(painter);
+    }
+
+    // Информационная панель
+    painter.setPen(Qt::black);
+    QString toolName;
+    switch (currentTool) {
+    case CIRCLE: toolName = "Круг"; break;
+    case RECTANGLE: toolName = "Прямоугольник"; break;
+    case TRIANGLE: toolName = "Треугольник"; break;
+    }
+
+    painter.drawText(10, 20, QString("Инструмент: %1").arg(toolName));
+    painter.drawText(10, 40, QString("Цвет: %1").arg(currentColor.name()));
+    painter.drawText(10, 60, QString("Фигур: %1").arg(storage.getCount()));
+
+    painter.drawText(width() - 250, 20, "Управление:");
+    painter.drawText(width() - 250, 40, "Стрелки - перемещение");
+    painter.drawText(width() - 250, 60, "Delete - удалить");
+    painter.drawText(width() - 250, 80, "Ctrl+клик - несколько");
 }
 
 void MainWindow::keyReleaseEvent(QKeyEvent *event) {
