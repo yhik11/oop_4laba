@@ -209,14 +209,33 @@ void MainWindow::keyPressEvent(QKeyEvent *event) {
     if (event->key() == Qt::Key_Control) {
         ctrlPressed = true;
     } else if (event->key() == Qt::Key_Delete) {
-        // Удаляем выделенные фигуры
+        // Удаление выделенных фигур
         for (int i = 0; i < storage.getCount(); i++) {
             if (storage.getObject(i)->isSelected()) {
                 storage.remove(i);
-                i--; // Уменьшаем индекс т.к. массив сдвинулся
+                i--;
             }
         }
         update();
+    } else {
+        // Управление стрелками для перемещения фигур
+        int dx = 0, dy = 0;
+        switch (event->key()) {
+        case Qt::Key_Left: dx = -5; break;
+        case Qt::Key_Right: dx = 5; break;
+        case Qt::Key_Up: dy = -5; break;
+        case Qt::Key_Down: dy = 5; break;
+        }
+
+        if (dx != 0 || dy != 0) {
+            // Перемещаем все выделенные фигуры
+            for (int i = 0; i < storage.getCount(); i++) {
+                if (storage.getObject(i)->isSelected()) {
+                    storage.getObject(i)->move(dx, dy);
+                }
+            }
+            update();
+        }
     }
 }
 

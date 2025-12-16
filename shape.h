@@ -30,6 +30,8 @@ public:
 
     // Проверка выхода за границы (общая для всех)
     bool checkBounds(const QRect& area) const;
+
+
 };
 
 #endif
