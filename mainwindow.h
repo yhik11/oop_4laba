@@ -2,22 +2,18 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
+#include <QMouseEvent>
 #include "mystorage.h"
 
 QT_BEGIN_NAMESPACE
-namespace Ui {
-class MainWindow;
-}
+namespace Ui { class MainWindow; }
 QT_END_NAMESPACE
 
-class MainWindow : public QMainWindow
-{
+class MainWindow : public QMainWindow {
     Q_OBJECT
 
 public:
     MainWindow(QWidget *parent = nullptr);
-
-
     ~MainWindow();
 
 protected:
@@ -25,12 +21,18 @@ protected:
     void mousePressEvent(QMouseEvent *event) override;
     void keyPressEvent(QKeyEvent *event) override;
     void keyReleaseEvent(QKeyEvent *event) override;
-    void resizeEvent(QResizeEvent *event) override;
 
 private:
     Ui::MainWindow *ui;
     MyStorage storage;
     bool ctrlPressed;
 
+    // ДОБАВЛЯЕМ ЭТИ ПОЛЯ:
+    enum ToolType { CIRCLE, RECTANGLE, TRIANGLE };
+    ToolType currentTool;
+    QColor currentColor;  // если используешь в createShape
+
+    void createShape(int x, int y);
 };
-#endif
+
+#endif // MAINWINDOW_H

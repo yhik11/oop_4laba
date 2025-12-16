@@ -326,6 +326,24 @@
 			"MU",
 			"EWIEGA46WW/moc_mystorage.cpp",
 			null
+		],
+		[
+			"C:/Users/minia/Documents/oop_4/rectangle.h",
+			"MU",
+			"EWIEGA46WW/moc_rectangle.cpp",
+			null
+		],
+		[
+			"C:/Users/minia/Documents/oop_4/shape.h",
+			"MU",
+			"EWIEGA46WW/moc_shape.cpp",
+			null
+		],
+		[
+			"C:/Users/minia/Documents/oop_4/triangle.h",
+			"MU",
+			"EWIEGA46WW/moc_triangle.cpp",
+			null
 		]
 	],
 	"HEADER_EXTENSIONS" : [ "h", "hh", "h++", "hm", "hpp", "hxx", "in", "txx" ],
@@ -404,7 +422,10 @@
 		[ "C:/Users/minia/Documents/oop_4/circle.cpp", "MU", null ],
 		[ "C:/Users/minia/Documents/oop_4/main.cpp", "MU", null ],
 		[ "C:/Users/minia/Documents/oop_4/mainwindow.cpp", "MU", null ],
-		[ "C:/Users/minia/Documents/oop_4/mystorage.cpp", "MU", null ]
+		[ "C:/Users/minia/Documents/oop_4/mystorage.cpp", "MU", null ],
+		[ "C:/Users/minia/Documents/oop_4/rectangle.cpp", "MU", null ],
+		[ "C:/Users/minia/Documents/oop_4/shape.cpp", "MU", null ],
+		[ "C:/Users/minia/Documents/oop_4/triangle.cpp", "MU", null ]
 	],
 	"UIC_OPTIONS" : [],
 	"UIC_SEARCH_PATHS" : [],

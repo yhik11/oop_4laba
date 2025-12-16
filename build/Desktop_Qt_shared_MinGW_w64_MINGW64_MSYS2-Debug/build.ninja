@@ -94,6 +94,33 @@ build CMakeFiles/oop_3.dir/mystorage.cpp.obj: CXX_COMPILER__oop_3_unscanned_Debu
   OBJECT_DIR = CMakeFiles\oop_3.dir
   OBJECT_FILE_DIR = CMakeFiles\oop_3.dir
 
+build CMakeFiles/oop_3.dir/shape.cpp.obj: CXX_COMPILER__oop_3_unscanned_Debug C$:/Users/minia/Documents/oop_4/shape.cpp || cmake_object_order_depends_target_oop_3
+  CONFIG = Debug
+  DEFINES = -DMINGW_HAS_SECURE_API=1 -DQT_CORE_LIB -DQT_GUI_LIB -DQT_NEEDS_QMAIN -DQT_WIDGETS_LIB -DUNICODE -DWIN32 -DWIN64 -DWINVER=0x0A00 -D_ENABLE_EXTENDED_ALIGNED_STORAGE -D_UNICODE -D_WIN32_WINNT=0x0A00 -D_WIN64
+  DEP_FILE = CMakeFiles\oop_3.dir\shape.cpp.obj.d
+  FLAGS = -g -std=gnu++17 -fdiagnostics-color=always
+  INCLUDES = -IC:/Users/minia/Documents/oop_4/build/Desktop_Qt_shared_MinGW_w64_MINGW64_MSYS2-Debug/oop_3_autogen/include -isystem C:/msys64/mingw64/include/qt6/QtCore -isystem C:/msys64/mingw64/include/qt6 -isystem C:/msys64/mingw64/share/qt6/mkspecs/win32-g++ -isystem C:/msys64/mingw64/include/qt6/QtWidgets -isystem C:/msys64/mingw64/include/qt6/QtGui
+  OBJECT_DIR = CMakeFiles\oop_3.dir
+  OBJECT_FILE_DIR = CMakeFiles\oop_3.dir
+
+build CMakeFiles/oop_3.dir/rectangle.cpp.obj: CXX_COMPILER__oop_3_unscanned_Debug C$:/Users/minia/Documents/oop_4/rectangle.cpp || cmake_object_order_depends_target_oop_3
+  CONFIG = Debug
+  DEFINES = -DMINGW_HAS_SECURE_API=1 -DQT_CORE_LIB -DQT_GUI_LIB -DQT_NEEDS_QMAIN -DQT_WIDGETS_LIB -DUNICODE -DWIN32 -DWIN64 -DWINVER=0x0A00 -D_ENABLE_EXTENDED_ALIGNED_STORAGE -D_UNICODE -D_WIN32_WINNT=0x0A00 -D_WIN64
+  DEP_FILE = CMakeFiles\oop_3.dir\rectangle.cpp.obj.d
+  FLAGS = -g -std=gnu++17 -fdiagnostics-color=always
+  INCLUDES = -IC:/Users/minia/Documents/oop_4/build/Desktop_Qt_shared_MinGW_w64_MINGW64_MSYS2-Debug/oop_3_autogen/include -isystem C:/msys64/mingw64/include/qt6/QtCore -isystem C:/msys64/mingw64/include/qt6 -isystem C:/msys64/mingw64/share/qt6/mkspecs/win32-g++ -isystem C:/msys64/mingw64/include/qt6/QtWidgets -isystem C:/msys64/mingw64/include/qt6/QtGui
+  OBJECT_DIR = CMakeFiles\oop_3.dir
+  OBJECT_FILE_DIR = CMakeFiles\oop_3.dir
+
+build CMakeFiles/oop_3.dir/triangle.cpp.obj: CXX_COMPILER__oop_3_unscanned_Debug C$:/Users/minia/Documents/oop_4/triangle.cpp || cmake_object_order_depends_target_oop_3
+  CONFIG = Debug
+  DEFINES = -DMINGW_HAS_SECURE_API=1 -DQT_CORE_LIB -DQT_GUI_LIB -DQT_NEEDS_QMAIN -DQT_WIDGETS_LIB -DUNICODE -DWIN32 -DWIN64 -DWINVER=0x0A00 -D_ENABLE_EXTENDED_ALIGNED_STORAGE -D_UNICODE -D_WIN32_WINNT=0x0A00 -D_WIN64
+  DEP_FILE = CMakeFiles\oop_3.dir\triangle.cpp.obj.d
+  FLAGS = -g -std=gnu++17 -fdiagnostics-color=always
+  INCLUDES = -IC:/Users/minia/Documents/oop_4/build/Desktop_Qt_shared_MinGW_w64_MINGW64_MSYS2-Debug/oop_3_autogen/include -isystem C:/msys64/mingw64/include/qt6/QtCore -isystem C:/msys64/mingw64/include/qt6 -isystem C:/msys64/mingw64/share/qt6/mkspecs/win32-g++ -isystem C:/msys64/mingw64/include/qt6/QtWidgets -isystem C:/msys64/mingw64/include/qt6/QtGui
+  OBJECT_DIR = CMakeFiles\oop_3.dir
+  OBJECT_FILE_DIR = CMakeFiles\oop_3.dir
+
 
 # =============================================================================
 # Link build statements for EXECUTABLE target oop_3
@@ -102,7 +129,7 @@ build CMakeFiles/oop_3.dir/mystorage.cpp.obj: CXX_COMPILER__oop_3_unscanned_Debu
 #############################################
 # Link the executable oop_3.exe
 
-build oop_3.exe: CXX_EXECUTABLE_LINKER__oop_3_Debug CMakeFiles/oop_3.dir/oop_3_autogen/mocs_compilation.cpp.obj CMakeFiles/oop_3.dir/main.cpp.obj CMakeFiles/oop_3.dir/mainwindow.cpp.obj CMakeFiles/oop_3.dir/circle.cpp.obj CMakeFiles/oop_3.dir/mystorage.cpp.obj | C$:/msys64/mingw64/lib/libQt6Widgets.dll.a C$:/msys64/mingw64/lib/libQt6Gui.dll.a C$:/msys64/mingw64/lib/libQt6Core.dll.a C$:/msys64/mingw64/lib/libQt6EntryPoint.a || oop_3_autogen oop_3_autogen_timestamp_deps
+build oop_3.exe: CXX_EXECUTABLE_LINKER__oop_3_Debug CMakeFiles/oop_3.dir/oop_3_autogen/mocs_compilation.cpp.obj CMakeFiles/oop_3.dir/main.cpp.obj CMakeFiles/oop_3.dir/mainwindow.cpp.obj CMakeFiles/oop_3.dir/circle.cpp.obj CMakeFiles/oop_3.dir/mystorage.cpp.obj CMakeFiles/oop_3.dir/shape.cpp.obj CMakeFiles/oop_3.dir/rectangle.cpp.obj CMakeFiles/oop_3.dir/triangle.cpp.obj | C$:/msys64/mingw64/lib/libQt6Widgets.dll.a C$:/msys64/mingw64/lib/libQt6Gui.dll.a C$:/msys64/mingw64/lib/libQt6Core.dll.a C$:/msys64/mingw64/lib/libQt6EntryPoint.a || oop_3_autogen oop_3_autogen_timestamp_deps
   CONFIG = Debug
   FLAGS = -g
   LINK_FLAGS = -mwindows

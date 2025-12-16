@@ -1,7 +1,7 @@
 C:/Users/minia/Documents/oop_4/build/Desktop_Qt_shared_MinGW_w64_MINGW64_MSYS2-Debug/oop_3_autogen/EWIEGA46WW/moc_mainwindow.cpp: C:/Users/minia/Documents/oop_4/mainwindow.h \
   C:/Users/minia/Documents/oop_4/build/Desktop_Qt_shared_MinGW_w64_MINGW64_MSYS2-Debug/oop_3_autogen/moc_predefs.h \
-  C:/Users/minia/Documents/oop_4/circle.h \
   C:/Users/minia/Documents/oop_4/mystorage.h \
+  C:/Users/minia/Documents/oop_4/shape.h \
   C:/msys64/mingw64/include/_mingw.h \
   C:/msys64/mingw64/include/_mingw_mac.h \
   C:/msys64/mingw64/include/_mingw_off_t.h \
@@ -198,6 +198,11 @@ C:/Users/minia/Documents/oop_4/build/Desktop_Qt_shared_MinGW_w64_MINGW64_MSYS2-D
   C:/msys64/mingw64/include/pthread_signal.h \
   C:/msys64/mingw64/include/pthread_time.h \
   C:/msys64/mingw64/include/pthread_unistd.h \
+  C:/msys64/mingw64/include/qt6/QtCore/QList \
+  C:/msys64/mingw64/include/qt6/QtCore/QObject \
+  C:/msys64/mingw64/include/qt6/QtCore/QRect \
+  C:/msys64/mingw64/include/qt6/QtCore/QSize \
+  C:/msys64/mingw64/include/qt6/QtCore/QSizeF \
   C:/msys64/mingw64/include/qt6/QtCore/q17memory.h \
   C:/msys64/mingw64/include/qt6/QtCore/q20functional.h \
   C:/msys64/mingw64/include/qt6/QtCore/q20iterator.h \
@@ -205,6 +210,7 @@ C:/Users/minia/Documents/oop_4/build/Desktop_Qt_shared_MinGW_w64_MINGW64_MSYS2-D
   C:/msys64/mingw64/include/qt6/QtCore/q20type_traits.h \
   C:/msys64/mingw64/include/qt6/QtCore/q20utility.h \
   C:/msys64/mingw64/include/qt6/QtCore/q23utility.h \
+  C:/msys64/mingw64/include/qt6/QtCore/qabstracteventdispatcher.h \
   C:/msys64/mingw64/include/qt6/QtCore/qalgorithms.h \
   C:/msys64/mingw64/include/qt6/QtCore/qalloc.h \
   C:/msys64/mingw64/include/qt6/QtCore/qanystringview.h \
@@ -215,6 +221,7 @@ C:/Users/minia/Documents/oop_4/build/Desktop_Qt_shared_MinGW_w64_MINGW64_MSYS2-D
   C:/msys64/mingw64/include/qt6/QtCore/qatomic.h \
   C:/msys64/mingw64/include/qt6/QtCore/qatomic_cxx11.h \
   C:/msys64/mingw64/include/qt6/QtCore/qbasicatomic.h \
+  C:/msys64/mingw64/include/qt6/QtCore/qbasictimer.h \
   C:/msys64/mingw64/include/qt6/QtCore/qbindingstorage.h \
   C:/msys64/mingw64/include/qt6/QtCore/qbytearray.h \
   C:/msys64/mingw64/include/qt6/QtCore/qbytearrayalgorithms.h \
@@ -232,10 +239,15 @@ C:/Users/minia/Documents/oop_4/build/Desktop_Qt_shared_MinGW_w64_MINGW64_MSYS2-D
   C:/msys64/mingw64/include/qt6/QtCore/qcontainerinfo.h \
   C:/msys64/mingw64/include/qt6/QtCore/qcontainertools_impl.h \
   C:/msys64/mingw64/include/qt6/QtCore/qcontiguouscache.h \
+  C:/msys64/mingw64/include/qt6/QtCore/qcoreapplication.h \
+  C:/msys64/mingw64/include/qt6/QtCore/qcoreapplication_platform.h \
+  C:/msys64/mingw64/include/qt6/QtCore/qcoreevent.h \
   C:/msys64/mingw64/include/qt6/QtCore/qdarwinhelpers.h \
   C:/msys64/mingw64/include/qt6/QtCore/qdatastream.h \
+  C:/msys64/mingw64/include/qt6/QtCore/qdeadlinetimer.h \
   C:/msys64/mingw64/include/qt6/QtCore/qdebug.h \
   C:/msys64/mingw64/include/qt6/QtCore/qendian.h \
+  C:/msys64/mingw64/include/qt6/QtCore/qeventloop.h \
   C:/msys64/mingw64/include/qt6/QtCore/qexceptionhandling.h \
   C:/msys64/mingw64/include/qt6/QtCore/qflags.h \
   C:/msys64/mingw64/include/qt6/QtCore/qfloat16.h \
@@ -247,12 +259,14 @@ C:/Users/minia/Documents/oop_4/build/Desktop_Qt_shared_MinGW_w64_MINGW64_MSYS2-D
   C:/msys64/mingw64/include/qt6/QtCore/qglobalstatic.h \
   C:/msys64/mingw64/include/qt6/QtCore/qhash.h \
   C:/msys64/mingw64/include/qt6/QtCore/qhashfunctions.h \
+  C:/msys64/mingw64/include/qt6/QtCore/qiodevice.h \
   C:/msys64/mingw64/include/qt6/QtCore/qiodevicebase.h \
   C:/msys64/mingw64/include/qt6/QtCore/qiterable.h \
   C:/msys64/mingw64/include/qt6/QtCore/qiterator.h \
   C:/msys64/mingw64/include/qt6/QtCore/qlatin1stringview.h \
   C:/msys64/mingw64/include/qt6/QtCore/qline.h \
   C:/msys64/mingw64/include/qt6/QtCore/qlist.h \
+  C:/msys64/mingw64/include/qt6/QtCore/qlocale.h \
   C:/msys64/mingw64/include/qt6/QtCore/qlogging.h \
   C:/msys64/mingw64/include/qt6/QtCore/qmalloc.h \
   C:/msys64/mingw64/include/qt6/QtCore/qmap.h \
@@ -262,6 +276,7 @@ C:/Users/minia/Documents/oop_4/build/Desktop_Qt_shared_MinGW_w64_MINGW64_MSYS2-D
   C:/msys64/mingw64/include/qt6/QtCore/qmetatype.h \
   C:/msys64/mingw64/include/qt6/QtCore/qminmax.h \
   C:/msys64/mingw64/include/qt6/QtCore/qnamespace.h \
+  C:/msys64/mingw64/include/qt6/QtCore/qnativeinterface.h \
   C:/msys64/mingw64/include/qt6/QtCore/qnumeric.h \
   C:/msys64/mingw64/include/qt6/QtCore/qobject.h \
   C:/msys64/mingw64/include/qt6/QtCore/qobject_impl.h \
@@ -319,24 +334,33 @@ C:/Users/minia/Documents/oop_4/build/Desktop_Qt_shared_MinGW_w64_MINGW64_MSYS2-D
   C:/msys64/mingw64/include/qt6/QtCore/qtversionchecks.h \
   C:/msys64/mingw64/include/qt6/QtCore/qtypeinfo.h \
   C:/msys64/mingw64/include/qt6/QtCore/qtypes.h \
+  C:/msys64/mingw64/include/qt6/QtCore/qurl.h \
   C:/msys64/mingw64/include/qt6/QtCore/qutf8stringview.h \
   C:/msys64/mingw64/include/qt6/QtCore/qvariant.h \
   C:/msys64/mingw64/include/qt6/QtCore/qvarlengtharray.h \
   C:/msys64/mingw64/include/qt6/QtCore/qversiontagging.h \
   C:/msys64/mingw64/include/qt6/QtCore/qxptype_traits.h \
   C:/msys64/mingw64/include/qt6/QtCore/qyieldcpu.h \
+  C:/msys64/mingw64/include/qt6/QtGui/QMouseEvent \
   C:/msys64/mingw64/include/qt6/QtGui/QPainter \
+  C:/msys64/mingw64/include/qt6/QtGui/QTransform \
   C:/msys64/mingw64/include/qt6/QtGui/qaction.h \
   C:/msys64/mingw64/include/qt6/QtGui/qbitmap.h \
   C:/msys64/mingw64/include/qt6/QtGui/qbrush.h \
   C:/msys64/mingw64/include/qt6/QtGui/qcolor.h \
   C:/msys64/mingw64/include/qt6/QtGui/qcursor.h \
+  C:/msys64/mingw64/include/qt6/QtGui/qevent.h \
+  C:/msys64/mingw64/include/qt6/QtGui/qeventpoint.h \
   C:/msys64/mingw64/include/qt6/QtGui/qfont.h \
   C:/msys64/mingw64/include/qt6/QtGui/qfontinfo.h \
   C:/msys64/mingw64/include/qt6/QtGui/qfontmetrics.h \
   C:/msys64/mingw64/include/qt6/QtGui/qfontvariableaxis.h \
+  C:/msys64/mingw64/include/qt6/QtGui/qguiapplication.h \
+  C:/msys64/mingw64/include/qt6/QtGui/qguiapplication_platform.h \
   C:/msys64/mingw64/include/qt6/QtGui/qicon.h \
   C:/msys64/mingw64/include/qt6/QtGui/qimage.h \
+  C:/msys64/mingw64/include/qt6/QtGui/qinputdevice.h \
+  C:/msys64/mingw64/include/qt6/QtGui/qinputmethod.h \
   C:/msys64/mingw64/include/qt6/QtGui/qkeysequence.h \
   C:/msys64/mingw64/include/qt6/QtGui/qpaintdevice.h \
   C:/msys64/mingw64/include/qt6/QtGui/qpainter.h \
@@ -344,15 +368,20 @@ C:/Users/minia/Documents/oop_4/build/Desktop_Qt_shared_MinGW_w64_MINGW64_MSYS2-D
   C:/msys64/mingw64/include/qt6/QtGui/qpen.h \
   C:/msys64/mingw64/include/qt6/QtGui/qpixelformat.h \
   C:/msys64/mingw64/include/qt6/QtGui/qpixmap.h \
+  C:/msys64/mingw64/include/qt6/QtGui/qpointingdevice.h \
   C:/msys64/mingw64/include/qt6/QtGui/qpolygon.h \
   C:/msys64/mingw64/include/qt6/QtGui/qregion.h \
   C:/msys64/mingw64/include/qt6/QtGui/qrgb.h \
   C:/msys64/mingw64/include/qt6/QtGui/qrgba64.h \
+  C:/msys64/mingw64/include/qt6/QtGui/qscreen.h \
+  C:/msys64/mingw64/include/qt6/QtGui/qscreen_platform.h \
   C:/msys64/mingw64/include/qt6/QtGui/qtextoption.h \
   C:/msys64/mingw64/include/qt6/QtGui/qtgui-config.h \
   C:/msys64/mingw64/include/qt6/QtGui/qtguiexports.h \
   C:/msys64/mingw64/include/qt6/QtGui/qtguiglobal.h \
   C:/msys64/mingw64/include/qt6/QtGui/qtransform.h \
+  C:/msys64/mingw64/include/qt6/QtGui/qvector2d.h \
+  C:/msys64/mingw64/include/qt6/QtGui/qvectornd.h \
   C:/msys64/mingw64/include/qt6/QtGui/qwindowdefs.h \
   C:/msys64/mingw64/include/qt6/QtGui/qwindowdefs_win.h \
   C:/msys64/mingw64/include/qt6/QtWidgets/QMainWindow \

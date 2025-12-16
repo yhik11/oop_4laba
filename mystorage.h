@@ -1,26 +1,35 @@
 #ifndef MYSTORAGE_H
 #define MYSTORAGE_H
 
-#include "circle.h"
+#include "shape.h"
 #include <vector>
 
 class MyStorage {
 private:
-    std::vector<CCircle*> circles;
+    std::vector<Shape*> shapes;
 
 public:
-    MyStorage(int initialCapacity = 10);
-    //MyStorage();
+    MyStorage();
     ~MyStorage();
 
-    void setObject(int index, CCircle* circle);
-    CCircle* getObject(int index) const;
-    int getCount() const;
+    // Основные методы
+    void add(Shape* shape);
     void remove(int index);
-    void add(CCircle* circle);
-    void removeSelected();
+    Shape* getObject(int index) const;
+    int getCount() const;
+
+    // Методы для выделения
     void selectAt(int x, int y);
     void deselectAll();
+    void removeSelected();
+
+    // Вспомогательные методы
+    void clear();
+    bool isEmpty() const;
+    int countSelected() const;
+
+    // Для итерации (опционально)
+    std::vector<Shape*>& getAll() { return shapes; }
 };
 
-#endif
+#endif // MYSTORAGE_H
