@@ -34,6 +34,7 @@ private:
 
     void createShape(int x, int y);
     void createMenu();
+    void createToolbar();
 
 private slots:  // ← ДОБАВЛЯЕМ ЭТОТ РАЗДЕЛ
     void setCircleTool();

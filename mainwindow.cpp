@@ -4,6 +4,7 @@
 #include "rectangle.h"
 #include "triangle.h"
 #include <QPainter>
+#include <QToolBar>
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -13,6 +14,7 @@ MainWindow::MainWindow(QWidget *parent)
     ui->setupUi(this);
 
     createMenu();  // ← ВЫЗЫВАЕМ СОЗДАНИЕ МЕНЮ
+    createToolbar();
 
     setFocusPolicy(Qt::StrongFocus);
     setWindowTitle("Визуальный редактор");
@@ -21,6 +23,41 @@ MainWindow::MainWindow(QWidget *parent)
 
 MainWindow::~MainWindow() {
     delete ui;
+}
+
+void MainWindow::createToolbar() {
+    QToolBar* toolbar = addToolBar("Инструменты");
+
+    // Кнопка для круга
+    QAction* circleAction = toolbar->addAction("○");
+    circleAction->setToolTip("Круг");
+    connect(circleAction, &QAction::triggered, this, &MainWindow::setCircleTool);
+
+    // Кнопка для прямоугольника
+    QAction* rectAction = toolbar->addAction("□");
+    rectAction->setToolTip("Прямоугольник");
+    connect(rectAction, &QAction::triggered, this, &MainWindow::setRectangleTool);
+
+    // Кнопка для треугольника
+    QAction* triangleAction = toolbar->addAction("△");
+    triangleAction->setToolTip("Треугольник");
+    connect(triangleAction, &QAction::triggered, this, &MainWindow::setTriangleTool);
+
+    // Разделитель
+    toolbar->addSeparator();
+
+    // Кнопка удаления
+    QAction* deleteAction = toolbar->addAction("Удалить");
+    deleteAction->setToolTip("Удалить выделенные фигуры");
+    connect(deleteAction, &QAction::triggered, [this]() {
+        for (int i = 0; i < storage.getCount(); i++) {
+            if (storage.getObject(i)->isSelected()) {
+                storage.remove(i);
+                i--;
+            }
+        }
+        update();
+    });
 }
 
 // Добавляем метод создания меню:
