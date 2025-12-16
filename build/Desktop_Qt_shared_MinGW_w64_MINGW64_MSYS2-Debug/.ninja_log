@@ -1,0 +1,11 @@
+# ninja log v7
+18	1727	7875725558113969	oop_3_autogen/timestamp	8333fa8d80a9a225
+18	1727	7875725558113969	oop_3_autogen/mocs_compilation.cpp	8333fa8d80a9a225
+18	1727	7875725558113969	C:/Users/minia/Documents/oop_4/build/Desktop_Qt_shared_MinGW_w64_MINGW64_MSYS2-Debug/oop_3_autogen/timestamp	8333fa8d80a9a225
+18	1727	7875725558113969	C:/Users/minia/Documents/oop_4/build/Desktop_Qt_shared_MinGW_w64_MINGW64_MSYS2-Debug/oop_3_autogen/mocs_compilation.cpp	8333fa8d80a9a225
+1776	6553	7875725560120864	CMakeFiles/oop_3.dir/circle.cpp.obj	aafc714bae295dcf
+1792	6998	7875725560277650	CMakeFiles/oop_3.dir/mystorage.cpp.obj	98724df8bbaf5a7b
+1750	7029	7875725559849301	CMakeFiles/oop_3.dir/main.cpp.obj	233d56dee781abe2
+1738	7073	7875725559737235	CMakeFiles/oop_3.dir/oop_3_autogen/mocs_compilation.cpp.obj	d176af22be0a8f6
+1763	8399	7875725559983390	CMakeFiles/oop_3.dir/mainwindow.cpp.obj	d00bd357c39cebc5
+8399	8964	7875725626346045	oop_3.exe	afc84b4253c365dd
