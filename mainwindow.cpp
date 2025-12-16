@@ -12,6 +12,8 @@ MainWindow::MainWindow(QWidget *parent)
     , currentTool(CIRCLE) {
     ui->setupUi(this);
 
+    createMenu();  // ← ВЫЗЫВАЕМ СОЗДАНИЕ МЕНЮ
+
     setFocusPolicy(Qt::StrongFocus);
     setWindowTitle("Визуальный редактор");
     resize(800, 600);
@@ -21,6 +23,51 @@ MainWindow::~MainWindow() {
     delete ui;
 }
 
+// Добавляем метод создания меню:
+void MainWindow::createMenu() {
+    QMenuBar* menuBar = this->menuBar();
+
+    // Меню "Инструменты"
+    QMenu* toolsMenu = menuBar->addMenu("Инструменты");
+
+    QAction* circleAction = toolsMenu->addAction("Круг");
+    connect(circleAction, &QAction::triggered, this, &MainWindow::setCircleTool);
+
+    QAction* rectangleAction = toolsMenu->addAction("Прямоугольник");
+    connect(rectangleAction, &QAction::triggered, this, &MainWindow::setRectangleTool);
+
+    QAction* triangleAction = toolsMenu->addAction("Треугольник");
+    connect(triangleAction, &QAction::triggered, this, &MainWindow::setTriangleTool);
+
+    // Меню "Правка"
+    QMenu* editMenu = menuBar->addMenu("Правка");
+    QAction* deleteAction = editMenu->addAction("Удалить выделенные");
+    connect(deleteAction, &QAction::triggered, [this]() {
+        // Удаляем выделенные фигуры
+        for (int i = 0; i < storage.getCount(); i++) {
+            if (storage.getObject(i)->isSelected()) {
+                storage.remove(i);
+                i--;
+            }
+        }
+        update();
+    });
+}
+
+// Реализуем слоты:
+void MainWindow::setCircleTool() {
+    currentTool = CIRCLE;
+}
+
+void MainWindow::setRectangleTool() {
+    currentTool = RECTANGLE;
+}
+
+void MainWindow::setTriangleTool() {
+    currentTool = TRIANGLE;
+}
+
+// Обновляем paintEvent для отображения текущего инструмента:
 void MainWindow::paintEvent(QPaintEvent *event) {
     Q_UNUSED(event);
 
@@ -32,10 +79,20 @@ void MainWindow::paintEvent(QPaintEvent *event) {
         storage.getObject(i)->draw(painter);
     }
 
-    // Простая информационная панель
+    // Информационная панель
     painter.setPen(Qt::black);
-    painter.drawText(10, 20, QString("Фигур: %1").arg(storage.getCount()));
+    QString toolName;
+    switch (currentTool) {
+    case CIRCLE: toolName = "Круг"; break;
+    case RECTANGLE: toolName = "Прямоугольник"; break;
+    case TRIANGLE: toolName = "Треугольник"; break;
+    }
+
+    painter.drawText(10, 20, QString("Инструмент: %1").arg(toolName));
+    painter.drawText(10, 40, QString("Фигур: %1").arg(storage.getCount()));
 }
+
+
 
 void MainWindow::mousePressEvent(QMouseEvent *event) {
     if (event->button() == Qt::LeftButton) {

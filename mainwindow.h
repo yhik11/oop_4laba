@@ -33,6 +33,14 @@ private:
     QColor currentColor;  // если используешь в createShape
 
     void createShape(int x, int y);
+    void createMenu();
+
+private slots:  // ← ДОБАВЛЯЕМ ЭТОТ РАЗДЕЛ
+    void setCircleTool();
+    void setRectangleTool();
+    void setTriangleTool();
 };
+
+
 
 #endif // MAINWINDOW_H
