@@ -1,26 +1,22 @@
-#ifndef CCIRCLE_H
-#define CCIRCLE_H
+#ifndef CIRCLE_H
+#define CIRCLE_H
 
-#include <QPainter>
+#include "shape.h"
 
-class CCircle {
+class Circle : public Shape {
 private:
-    int x, y;
-    const int radius;
-    bool selected;
+    int radius;
 
 public:
-    CCircle(int x = 0, int y = 0, int radius = 20);
+    Circle(int x = 0, int y = 0, int radius = 20,
+           const QColor& color = Qt::red);
 
-    void draw(QPainter &painter) const;
-    bool contains(int mx, int my) const;
+    void draw(QPainter& painter) const override;
+    bool contains(int mx, int my) const override;
+    QRect getBounds() const override;
 
-    bool isSelected() const { return selected; }
-    void setSelected(bool s) { selected = s; }
-
-    int getX() const { return x; }
-    int getY() const { return y; }
     int getRadius() const { return radius; }
+    void setRadius(int r) { radius = r; }
 };
 
 #endif

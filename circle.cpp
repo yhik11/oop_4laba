@@ -1,22 +1,22 @@
-// circle.cpp
 #include "circle.h"
 #include <cmath>
 
-CCircle::CCircle(int x, int y, int radius)
-    : x(x), y(y), radius(radius) {
+Circle::Circle(int x, int y, int radius, const QColor& color)
+    : Shape(x, y, color), radius(radius) {
 }
 
-void CCircle::draw(QPainter &painter) const {
-    if (selected) {
-        painter.setBrush(Qt::blue);
-    } else {
-        painter.setBrush(Qt::red);
-    }
+void Circle::draw(QPainter& painter) const {
+    painter.setBrush(selected ? QColor(100, 150, 255) : color);
+    painter.setPen(QPen(Qt::black, 1));
     painter.drawEllipse(x - radius, y - radius, radius * 2, radius * 2);
 }
 
-bool CCircle::contains(int mx, int my) const {
+bool Circle::contains(int mx, int my) const {
     int dx = mx - x;
     int dy = my - y;
     return (dx * dx + dy * dy) <= (radius * radius);
+}
+
+QRect Circle::getBounds() const {
+    return QRect(x - radius, y - radius, radius * 2, radius * 2);
 }
