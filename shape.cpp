@@ -5,6 +5,7 @@
 #include "triangle.h"
 #include "line.h"
 #include "group.h"
+#include <iostream>
 
 Shape::Shape(int x, int y, const QColor& color)
     : x(x), y(y), color(color), selected(false) {
@@ -29,36 +30,69 @@ bool Shape::checkBounds(const QRect& area) const {
 
 // РЕАЛИЗАЦИЯ load() только здесь:
 std::shared_ptr<Shape> Shape::load(std::ifstream& in) {
+    if (in.eof()) {
+        return nullptr;
+    }
+
     int typeId;
     in >> typeId;
 
-    int x, y, r, g, b;
-    in >> x >> y >> r >> g >> b;
-    QColor color(r, g, b);
+    if (in.fail()) {
+        std::cerr << "Ошибка чтения typeId" << std::endl;
+        return nullptr;
+    }
+
+    std::cout << "Загружаем объект typeId=" << typeId << std::endl;
 
     switch (typeId) {
     case 1: { // Circle
-        int radius;
-        in >> radius;
-        return std::make_shared<Circle>(x, y, radius, color);
+        int x, y, r, g, b, radius;
+        in >> x >> y >> r >> g >> b >> radius;
+        if (in.fail()) {
+            std::cerr << "Ошибка чтения Circle" << std::endl;
+            return nullptr;
+        }
+        return std::make_shared<Circle>(x, y, radius, QColor(r, g, b));
     }
     case 2: { // Rectangle
-        int width, height;
-        in >> width >> height;
-        return std::make_shared<Rectangle>(x, y, width, height, color);
+        int x, y, r, g, b, width, height;
+        in >> x >> y >> r >> g >> b >> width >> height;
+        if (in.fail()) {
+            std::cerr << "Ошибка чтения Rectangle" << std::endl;
+            return nullptr;
+        }
+        return std::make_shared<Rectangle>(x, y, width, height, QColor(r, g, b));
     }
     case 3: { // Triangle
-        int size;
-        in >> size;
-        return std::make_shared<Triangle>(x, y, size, color);
+        int x, y, r, g, b, size;
+        in >> x >> y >> r >> g >> b >> size;
+        if (in.fail()) {
+            std::cerr << "Ошибка чтения Triangle" << std::endl;
+            return nullptr;
+        }
+        return std::make_shared<Triangle>(x, y, size, QColor(r, g, b));
     }
     case 4: { // Line
-        int x2, y2;
-        in >> x2 >> y2;
-        return std::make_shared<Line>(x, y, x2, y2, color);
+        int x, y, r, g, b, x2, y2;
+        in >> x >> y >> r >> g >> b >> x2 >> y2;
+        if (in.fail()) {
+            std::cerr << "Ошибка чтения Line" << std::endl;
+            return nullptr;
+        }
+        return std::make_shared<Line>(x, y, x2, y2, QColor(r, g, b));
     }
-
+    case 99: { // Group
+        return Group::load(in);  // Передаем поток, typeId уже считан
+    }
+    case 100: { // Arrow
+        // Пока заглушка - нужно доработать сохранение/загрузку
+        int x, y, r, g, b, dummy1, dummy2;
+        in >> x >> y >> r >> g >> b >> dummy1 >> dummy2;
+        // Стрелки будут создаваться отдельно
+        return nullptr;
+    }
     default:
+        std::cerr << "Неизвестный typeId: " << typeId << std::endl;
         return nullptr;
     }
 }

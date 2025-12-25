@@ -3,6 +3,8 @@
 
 #include <QPainter>
 #include <QRect>
+#include <fstream>
+#include <memory>
 
 class Shape {
 protected:
@@ -19,8 +21,8 @@ public:
     virtual QRect getBounds() const = 0;
     virtual void resize(float scale) = 0;
 
-    // Общие методы для всех фигур
-    void move(int dx, int dy);
+    virtual void move(int dx, int dy);
+
     void setColor(const QColor& newColor);
     void setSelected(bool s);
 
@@ -29,13 +31,12 @@ public:
     int getX() const { return x; }
     int getY() const { return y; }
 
-    // Проверка выхода за границы (общая для всех)
     bool checkBounds(const QRect& area) const;
 
-    // ВАЖНО: сделайте эти методы НЕ чисто виртуальными
-    virtual int getTypeId() const { return 0; }  // НЕ = 0
-    virtual void save(std::ofstream& out) const {}  // Пустая реализация
-    static std::shared_ptr<Shape> load(std::ifstream& in) { return nullptr; }
+    // ТОЛЬКО ОБЪЯВЛЕНИЯ:
+    virtual int getTypeId() const = 0;
+    virtual void save(std::ofstream& out) const = 0;
+    static std::shared_ptr<Shape> load(std::ifstream& in);  // ← без реализации
 };
 
 #endif
