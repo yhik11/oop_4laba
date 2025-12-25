@@ -28,19 +28,26 @@ private:
     bool ctrlPressed;
 
     // ДОБАВЛЯЕМ ЭТИ ПОЛЯ:
-    enum ToolType { CIRCLE, RECTANGLE, TRIANGLE };
+    enum ToolType { CIRCLE, RECTANGLE, TRIANGLE, LINE };
     ToolType currentTool;
     QColor currentColor;  // если используешь в createShape
 
     void createShape(int x, int y);
     void createMenu();
     void createToolbar();
+    void createLine();
 
 private slots:  // ← ДОБАВЛЯЕМ ЭТОТ РАЗДЕЛ
     void setCircleTool();
     void setRectangleTool();
     void setTriangleTool();
+    void setLineTool();
     void changeColor();
+
+    void groupSelected();
+    void ungroupSelected();
+    void saveProject();
+    void loadProject();
 };
 
 
