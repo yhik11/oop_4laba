@@ -2,11 +2,14 @@
 #define MYSTORAGE_H
 
 #include "shape.h"
+#include "observer.h"
 #include <vector>
+#include <memory>
+#include <string>
 
-class MyStorage {
+class MyStorage : public Subject {
 private:
-    std::vector<Shape*> shapes;
+    std::vector<std::shared_ptr<Shape>> shapes;
 
 public:
     MyStorage();
@@ -14,9 +17,12 @@ public:
 
     // Основные методы
     void add(Shape* shape);
-    void remove(int index);
+    void addShared(std::shared_ptr<Shape> shape);
     Shape* getObject(int index) const;
+    std::shared_ptr<Shape> getSharedPtr(int index) const;
+    void remove(int index);
     int getCount() const;
+    void clear();
 
     // Методы для выделения
     void selectAt(int x, int y);
@@ -24,12 +30,16 @@ public:
     void removeSelected();
 
     // Вспомогательные методы
-    void clear();
     bool isEmpty() const;
     int countSelected() const;
 
-    // Для итерации (опционально)
-    std::vector<Shape*>& getAll() { return shapes; }
+    // Методы для сериализации
+    bool saveToFile(const std::string& filename) const;
+    bool loadFromFile(const std::string& filename);
+
+    // Для итерации
+    std::vector<std::shared_ptr<Shape>>& getAll() { return shapes; }
+    const std::vector<std::shared_ptr<Shape>>& getAll() const { return shapes; }
 };
 
-#endif // MYSTORAGE_H
+#endif

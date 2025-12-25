@@ -5,6 +5,8 @@
 #include "triangle.h"
 #include "line.h"
 #include "group.h"
+#include "arrow.h"
+#include "objecttree.h"
 #include <QPainter>
 #include <QToolBar>
 #include <QColorDialog>
@@ -13,13 +15,15 @@
 #include <QFileDialog>
 #include <QMessageBox>
 #include <QDir>
+#include <QDockWidget>
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
     , ctrlPressed(false)
     , currentTool(CIRCLE)
-    , currentColor(Qt::red) {
+    , currentColor(Qt::red)
+    , creatingArrow(false) {
     ui->setupUi(this);
 
     setStyleSheet(
@@ -35,13 +39,22 @@ MainWindow::MainWindow(QWidget *parent)
         "QMenu::item:selected { background-color: #d0d0d0; }"
         );
 
+    // СОЗДАЁМ И ДОБАВЛЯЕМ ДЕРЕВО ОБЪЕКТОВ
+    objectTree = new ObjectTree(this);
+    objectTree->setStorage(&storage);
+
+    // Создаём док-виджет правильно
+    QDockWidget* dockWidget = new QDockWidget(tr("Дерево объектов"), this);
+    dockWidget->setWidget(objectTree);
+    dockWidget->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea);
+    addDockWidget(Qt::LeftDockWidgetArea, dockWidget);
 
     createMenu();
     createToolbar();
 
     setFocusPolicy(Qt::StrongFocus);
-
-    resize(800, 600);
+    setWindowTitle("Визуальный редактор - Л.Р.7");
+    resize(1000, 600);
 }
 
 MainWindow::~MainWindow() {
@@ -51,59 +64,61 @@ MainWindow::~MainWindow() {
 void MainWindow::createToolbar() {
     QToolBar* toolbar = addToolBar("Инструменты");
 
-    // Кнопка для круга
     QAction* circleAction = toolbar->addAction("○");
     circleAction->setToolTip("Круг");
     connect(circleAction, &QAction::triggered, this, &MainWindow::setCircleTool);
 
-    // Кнопка для прямоугольника
     QAction* rectAction = toolbar->addAction("□");
     rectAction->setToolTip("Прямоугольник");
     connect(rectAction, &QAction::triggered, this, &MainWindow::setRectangleTool);
 
-    // Кнопка для треугольника
     QAction* triangleAction = toolbar->addAction("△");
     triangleAction->setToolTip("Треугольник");
     connect(triangleAction, &QAction::triggered, this, &MainWindow::setTriangleTool);
 
-    // Кнопка для линии
     QAction* lineAction = toolbar->addAction("─");
     lineAction->setToolTip("Линия");
     connect(lineAction, &QAction::triggered, this, &MainWindow::setLineTool);
 
-    // Разделитель
+    QAction* arrowAction = toolbar->addAction("➡️");
+    arrowAction->setToolTip("Стрелка");
+    connect(arrowAction, &QAction::triggered, this, &MainWindow::setArrowTool);
+
     toolbar->addSeparator();
 
     QAction* colorAction = toolbar->addAction("🎨");
     colorAction->setToolTip("Изменить цвет");
     connect(colorAction, &QAction::triggered, this, &MainWindow::changeColor);
 
-    // Кнопка удаления
     QAction* deleteAction = toolbar->addAction("Удалить");
     deleteAction->setToolTip("Удалить выделенные фигуры");
     connect(deleteAction, &QAction::triggered, [this]() {
+        // Собираем индексы для удаления
+        std::vector<int> toRemove;
         for (int i = 0; i < storage.getCount(); i++) {
             if (storage.getObject(i)->isSelected()) {
-                storage.remove(i);
-                i--;
+                toRemove.push_back(i);
             }
         }
+
+        // Удаляем в обратном порядке
+        for (auto it = toRemove.rbegin(); it != toRemove.rend(); ++it) {
+            storage.remove(*it);
+        }
+
         update();
     });
 
-    // Кнопка группировки
     QAction* groupAction = toolbar->addAction("Группа");
     groupAction->setToolTip("Группировать выделенные фигуры");
     connect(groupAction, &QAction::triggered, this, &MainWindow::groupSelected);
 
-    // Кнопка разгруппировки
     QAction* ungroupAction = toolbar->addAction("Разгруппировать");
     ungroupAction->setToolTip("Разгруппировать выделенные группы");
     connect(ungroupAction, &QAction::triggered, this, &MainWindow::ungroupSelected);
 
     toolbar->addSeparator();
 
-    // Кнопки сохранения/загрузки
     QAction* saveAction = toolbar->addAction("💾");
     saveAction->setToolTip("Сохранить проект");
     connect(saveAction, &QAction::triggered, this, &MainWindow::saveProject);
@@ -116,7 +131,6 @@ void MainWindow::createToolbar() {
 void MainWindow::createMenu() {
     QMenuBar* menuBar = this->menuBar();
 
-    // Меню "Файл"
     QMenu* fileMenu = menuBar->addMenu("Файл");
     QAction* saveAction = fileMenu->addAction("Сохранить проект...");
     connect(saveAction, &QAction::triggered, this, &MainWindow::saveProject);
@@ -126,7 +140,6 @@ void MainWindow::createMenu() {
     QAction* exitAction = fileMenu->addAction("Выход");
     connect(exitAction, &QAction::triggered, this, &QWidget::close);
 
-    // Меню "Инструменты"
     QMenu* toolsMenu = menuBar->addMenu("Инструменты");
     QAction* circleAction = toolsMenu->addAction("Круг");
     connect(circleAction, &QAction::triggered, this, &MainWindow::setCircleTool);
@@ -136,19 +149,27 @@ void MainWindow::createMenu() {
     connect(triangleAction, &QAction::triggered, this, &MainWindow::setTriangleTool);
     QAction* lineAction = toolsMenu->addAction("Линия");
     connect(lineAction, &QAction::triggered, this, &MainWindow::setLineTool);
+    QAction* arrowAction = toolsMenu->addAction("Стрелка");
+    connect(arrowAction, &QAction::triggered, this, &MainWindow::setArrowTool);
 
-    // Меню "Правка"
     QMenu* editMenu = menuBar->addMenu("Правка");
     QAction* colorAction = editMenu->addAction("Изменить цвет...");
     connect(colorAction, &QAction::triggered, this, &MainWindow::changeColor);
     QAction* deleteAction = editMenu->addAction("Удалить выделенные");
     connect(deleteAction, &QAction::triggered, [this]() {
+        // Собираем индексы для удаления
+        std::vector<int> toRemove;
         for (int i = 0; i < storage.getCount(); i++) {
             if (storage.getObject(i)->isSelected()) {
-                storage.remove(i);
-                i--;
+                toRemove.push_back(i);
             }
         }
+
+        // Удаляем в обратном порядке
+        for (auto it = toRemove.rbegin(); it != toRemove.rend(); ++it) {
+            storage.remove(*it);
+        }
+
         update();
     });
     editMenu->addSeparator();
@@ -160,18 +181,32 @@ void MainWindow::createMenu() {
 
 void MainWindow::setCircleTool() {
     currentTool = CIRCLE;
+    creatingArrow = false;
+    arrowSource.reset();
 }
 
 void MainWindow::setRectangleTool() {
     currentTool = RECTANGLE;
+    creatingArrow = false;
+    arrowSource.reset();
 }
 
 void MainWindow::setTriangleTool() {
     currentTool = TRIANGLE;
+    creatingArrow = false;
+    arrowSource.reset();
 }
 
 void MainWindow::setLineTool() {
     currentTool = LINE;
+    creatingArrow = false;
+    arrowSource.reset();
+}
+
+void MainWindow::setArrowTool() {
+    currentTool = ARROW;
+    creatingArrow = false;
+    arrowSource.reset();
 }
 
 void MainWindow::changeColor() {
@@ -195,8 +230,66 @@ void MainWindow::mousePressEvent(QMouseEvent *event) {
         int x = event->pos().x();
         int y = event->pos().y();
 
-        if (ctrlPressed) {
-            // Ctrl+клик: добавляем/убираем выделение
+        if (currentTool == ARROW) {
+            // Режим создания стрелки
+            if (ctrlPressed) {
+                // Ctrl+клик в режиме стрелки - обычное выделение
+                for (int i = storage.getCount() - 1; i >= 0; i--) {
+                    if (storage.getObject(i)->contains(x, y)) {
+                        bool current = storage.getObject(i)->isSelected();
+                        storage.getObject(i)->setSelected(!current);
+                        break;
+                    }
+                }
+                update();
+            } else {
+                // Ищем фигуру под курсором
+                std::shared_ptr<::Shape> clickedShape;
+                int clickedIndex = -1;
+
+                for (int i = storage.getCount() - 1; i >= 0; i--) {
+                    if (storage.getObject(i)->contains(x, y)) {
+                        clickedShape = storage.getSharedPtr(i);
+                        clickedIndex = i;
+                        break;
+                    }
+                }
+
+                if (clickedShape) {
+                    if (!creatingArrow) {
+                        // Первый клик - выбираем источник
+                        arrowSource = clickedShape;
+                        creatingArrow = true;
+                        // Визуально выделяем источник
+                        storage.deselectAll();
+                        arrowSource->setSelected(true);
+                        storage.notifySelectionChanged();
+                        update();
+                    } else {
+                        // Второй клик - создаём стрелку
+                        if (arrowSource != clickedShape) {
+                            createArrow(arrowSource, clickedShape);
+                        }
+                        // Сбрасываем состояние
+                        arrowSource->setSelected(false);
+                        arrowSource.reset();
+                        creatingArrow = false;
+                        storage.notifySelectionChanged();
+                        update();
+                    }
+                } else {
+                    // Кликнули по пустому месту - сбрасываем создание стрелки
+                    if (creatingArrow && arrowSource) {
+                        arrowSource->setSelected(false);
+                    }
+                    arrowSource.reset();
+                    creatingArrow = false;
+                    storage.deselectAll();
+                    update();
+                }
+            }
+        } else if (ctrlPressed) {
+            // Ctrl+клик: добавляем/убираем выделение (для других инструментов)
             for (int i = storage.getCount() - 1; i >= 0; i--) {
                 if (storage.getObject(i)->contains(x, y)) {
                     bool current = storage.getObject(i)->isSelected();
@@ -204,11 +297,12 @@ void MainWindow::mousePressEvent(QMouseEvent *event) {
                     break;
                 }
             }
+            storage.notifySelectionChanged();
+            update();
         } else {
-            // Обычный клик
+            // Обычный клик для других инструментов
             bool clickedOnShape = false;
 
-            // Проверяем, попали ли в существующую фигуру
             for (int i = 0; i < storage.getCount(); i++) {
                 if (storage.getObject(i)->contains(x, y)) {
                     clickedOnShape = true;
@@ -218,24 +312,22 @@ void MainWindow::mousePressEvent(QMouseEvent *event) {
 
             if (clickedOnShape) {
                 // Кликнули по фигуре - выделяем её
-                for (int i = 0; i < storage.getCount(); i++) {
-                    storage.getObject(i)->setSelected(false);
-                }
+                storage.deselectAll();
                 for (int i = storage.getCount() - 1; i >= 0; i--) {
                     if (storage.getObject(i)->contains(x, y)) {
                         storage.getObject(i)->setSelected(true);
                         break;
                     }
                 }
+                storage.notifySelectionChanged();
             } else {
-                // Кликнули по пустому месту - создаём новую фигуру
-                for (int i = 0; i < storage.getCount(); i++) {
-                    storage.getObject(i)->setSelected(false);
-                }
+                // Кликнули по пустому месту - создаём новую фигуру или сбрасываем выделение
+                storage.deselectAll();
+                storage.notifySelectionChanged();
                 createShape(x, y);
             }
+            update();
         }
-        update();
     }
 }
 
@@ -244,12 +336,18 @@ void MainWindow::keyPressEvent(QKeyEvent *event) {
         ctrlPressed = true;
     } else if (event->key() == Qt::Key_Delete) {
         // Удаление выделенных фигур
+        std::vector<int> toRemove;
+
         for (int i = 0; i < storage.getCount(); i++) {
             if (storage.getObject(i)->isSelected()) {
-                storage.remove(i);
-                i--;
+                toRemove.push_back(i);
             }
         }
+
+        for (auto it = toRemove.rbegin(); it != toRemove.rend(); ++it) {
+            storage.remove(*it);
+        }
+
         update();
     } else {
         // Управление стрелками для перемещения фигур
@@ -262,31 +360,20 @@ void MainWindow::keyPressEvent(QKeyEvent *event) {
         }
 
         if (dx != 0 || dy != 0) {
-            QRect area = this->rect();  // Границы окна
+            QRect area = this->rect();
 
-            // Перемещаем все выделенные фигуры с проверкой границ
             for (int i = 0; i < storage.getCount(); i++) {
-                Shape* shape = storage.getObject(i);
-                if (shape->isSelected()) {
-                    // Получаем границы фигуры
+                ::Shape* shape = storage.getObject(i);
+                if (shape && shape->isSelected()) {
                     QRect bounds = shape->getBounds();
-
-                    // Проверяем, не выйдет ли фигура за границы
-                    bool canMove = true;
-
-                    // Создаем "призрачные" границы после перемещения
                     QRect newBounds = bounds.translated(dx, dy);
 
-                    // Проверяем, что фигура полностью внутри окна
-                    if (!area.contains(newBounds)) {
-                        canMove = false;
-                    }
-
-                    if (canMove) {
+                    if (area.contains(newBounds)) {
                         shape->move(dx, dy);
                     }
                 }
             }
+            storage.notifyUpdate("objects_moved");
             update();
         }
     }
@@ -294,11 +381,9 @@ void MainWindow::keyPressEvent(QKeyEvent *event) {
         float scale = (event->key() == Qt::Key_Plus) ? 1.1f : 0.9f;
         QRect area = this->rect();
         for (int i = 0; i < storage.getCount(); i++) {
-            Shape* shape = storage.getObject(i);
-            if (shape->isSelected()) {
+            ::Shape* shape = storage.getObject(i);
+            if (shape && shape->isSelected()) {
                 QRect currentBounds = shape->getBounds();
-
-                // Вычисляем примерные новые границы после масштабирования
                 QRect newBounds = currentBounds;
                 newBounds.setWidth(currentBounds.width() * scale);
                 newBounds.setHeight(currentBounds.height() * scale);
@@ -308,10 +393,10 @@ void MainWindow::keyPressEvent(QKeyEvent *event) {
                 }
             }
         }
+        storage.notifyUpdate("objects_resized");
         update();
     }
 }
-
 
 void MainWindow::paintEvent(QPaintEvent *event) {
     Q_UNUSED(event);
@@ -319,15 +404,13 @@ void MainWindow::paintEvent(QPaintEvent *event) {
     QPainter painter(this);
     painter.setRenderHint(QPainter::Antialiasing);
 
-    // Простой белый фон
     painter.fillRect(rect(), Qt::white);
 
-    // Отрисовываем все фигуры
+    // Рисуем все фигуры
     for (int i = 0; i < storage.getCount(); i++) {
         storage.getObject(i)->draw(painter);
     }
 
-    // Статус редактора (сверху слева, маленький)
     painter.setFont(QFont("Arial", 9));
     painter.setPen(Qt::black);
 
@@ -337,22 +420,32 @@ void MainWindow::paintEvent(QPaintEvent *event) {
     case RECTANGLE: toolName = "Прямоугольник"; break;
     case TRIANGLE: toolName = "Треугольник"; break;
     case LINE: toolName = "Линия"; break;
+    case ARROW: toolName = "Стрелка"; break;
     }
 
-    // Минимальная информация в углу
     painter.drawText(10, 20, QString("%1 | Цвет: %2").arg(toolName).arg(currentColor.name()));
     painter.drawText(10, 35, QString("Фигур: %1 | Выделено: %2").arg(storage.getCount()).arg(storage.countSelected()));
 
-    // Управление (снизу справа, компактно)
-    painter.setFont(QFont("Arial", 8));
+    // Подсказки для режима стрелки
+    if (currentTool == ARROW) {
+        if (creatingArrow && arrowSource) {
+            painter.setPen(QPen(Qt::green, 1, Qt::DashLine));
+            QRect bounds = arrowSource->getBounds();
+            painter.drawRect(bounds);
+            painter.drawText(10, 50, "Выберите цель для стрелки...");
+        } else if (!creatingArrow) {
+            painter.drawText(10, 50, "Выберите источник стрелки...");
+        }
+    }
 
+    painter.setFont(QFont("Arial", 8));
     QStringList controls = {
         "ЛКМ: создать/выделить",
         "Ctrl+ЛКМ: несколько",
         "Стрелки: перемещение",
         "Delete: удалить",
         "+/-: размер",
-        "Ctrl+G: группа"
+        "Стрелка: два клика для связи"
     };
 
     int yPos = height() - 100;
@@ -362,7 +455,6 @@ void MainWindow::paintEvent(QPaintEvent *event) {
     }
 }
 
-
 void MainWindow::keyReleaseEvent(QKeyEvent *event) {
     if (event->key() == Qt::Key_Control) {
         ctrlPressed = false;
@@ -370,7 +462,6 @@ void MainWindow::keyReleaseEvent(QKeyEvent *event) {
 }
 
 void MainWindow::createShape(int x, int y) {
-    // Используем новый метод с shared_ptr
     switch (currentTool) {
     case CIRCLE:
         storage.addShared(std::make_shared<Circle>(x, y, 20, currentColor));
@@ -384,14 +475,28 @@ void MainWindow::createShape(int x, int y) {
     case LINE:
         storage.addShared(std::make_shared<Line>(x, y, x + 40 + rand() % 30, y + 30 + rand() % 20, currentColor));
         break;
+    case ARROW:
+        // Стрелки создаются через два клика, не здесь
+        break;
     }
 }
 
-// ============ НОВЫЕ МЕТОДЫ ДЛЯ Л.Р.6 ============
+void MainWindow::createArrow(std::shared_ptr<::Shape> source, std::shared_ptr<::Shape> target) {
+    if (source && target && source != target) {
+        auto arrow = std::make_shared<Arrow>(source, target);
+        storage.addShared(arrow);
+
+        QMessageBox::information(this, "Стрелка создана",
+                                 QString("Создана стрелка между объектами"));
+    }
+}
+
+// ============ Методы для группировки ============
 
 void MainWindow::groupSelected() {
     // Собираем индексы выделенных фигур
     std::vector<int> selectedIndices;
+
     for (int i = 0; i < storage.getCount(); i++) {
         if (storage.getObject(i)->isSelected()) {
             selectedIndices.push_back(i);
@@ -407,63 +512,72 @@ void MainWindow::groupSelected() {
     // Создаём новую группу
     auto group = std::make_shared<Group>(Qt::gray);
 
-    // Временный вектор для хранения shared_ptr
-    std::vector<std::shared_ptr<Shape>> shapesToGroup;
-
-    // Собираем фигуры в обратном порядке
-    for (int i = selectedIndices.size() - 1; i >= 0; i--) {
-        int idx = selectedIndices[i];
-        // Безопасно получаем shared_ptr
-        auto& allShapes = storage.getAll();
-        if (idx < (int)allShapes.size()) {
-            shapesToGroup.push_back(allShapes[idx]);
+    // Собираем shared_ptr на фигуры В ОБРАТНОМ порядке
+    for (auto it = selectedIndices.rbegin(); it != selectedIndices.rend(); ++it) {
+        int idx = *it;
+        if (auto shapePtr = storage.getSharedPtr(idx)) {
+            group->addShape(shapePtr);
         }
     }
 
-    // Удаляем фигуры из хранилища
-    for (int i = selectedIndices.size() - 1; i >= 0; i--) {
-        int idx = selectedIndices[i];
-        storage.remove(idx);
+    // Удаляем оригинальные фигуры из хранилища (в обратном порядке)
+    for (auto it = selectedIndices.rbegin(); it != selectedIndices.rend(); ++it) {
+        storage.remove(*it);
     }
 
-    // Добавляем фигуры в группу
-    for (auto& shape : shapesToGroup) {
-        group->addShape(shape);
-    }
+    // Выделяем группу
+    group->setSelected(true);
 
     // Добавляем группу в хранилище
     storage.addShared(group);
 
     update();
     QMessageBox::information(this, "Группировка",
-                             QString("Создана группа из %1 фигур").arg(shapesToGroup.size()));
+                             QString("Создана группа из %1 фигур").arg(selectedIndices.size()));
 }
 
 void MainWindow::ungroupSelected() {
     bool changed = false;
 
+    // Собираем индексы групп для разгруппировки
+    std::vector<int> groupIndices;
+
     for (int i = 0; i < storage.getCount(); i++) {
-        if (storage.getObject(i)->isSelected()) {
-            auto shape = storage.getObject(i);
+        if (storage.getObject(i)->isSelected() &&
+            dynamic_cast<Group*>(storage.getObject(i))) {
+            groupIndices.push_back(i);
+        }
+    }
 
-            // Пытаемся привести к Group
-            if (auto group = dynamic_cast<Group*>(shape)) {
-                // Получаем доступ к внутреннему вектору shared_ptr
-                // Для этого нам нужно получить доступ к children
-                // Упрощённая реализация - просто удаляем группу
-                // В реальности нужно извлекать фигуры из группы
+    if (groupIndices.empty()) {
+        QMessageBox::information(this, "Разгруппировка",
+                                 "Нет выделенных групп для разгруппировки");
+        return;
+    }
 
-                storage.remove(i);
-                i--;  // Уменьшаем индекс т.к. удалили элемент
-                changed = true;
+    // Обрабатываем группы в обратном порядке
+    for (auto it = groupIndices.rbegin(); it != groupIndices.rend(); ++it) {
+        int idx = *it;
+
+        if (auto groupPtr = std::dynamic_pointer_cast<Group>(storage.getSharedPtr(idx))) {
+            // Извлекаем всех детей из группы
+            for (int j = 0; j < groupPtr->getChildCount(); j++) {
+                if (auto child = groupPtr->getChildSharedPtr(j)) {
+                    child->setSelected(false);
+                    storage.addShared(child);
+                }
             }
+
+            // Удаляем группу
+            storage.remove(idx);
+            changed = true;
         }
     }
 
     if (changed) {
         update();
         QMessageBox::information(this, "Разгруппировка",
-                                 "Группы разгруппированы (упрощённая реализация)");
+                                 QString("Разгруппировано %1 групп").arg(groupIndices.size()));
     }
 }
 
@@ -471,7 +585,7 @@ void MainWindow::saveProject() {
     QString filename = QFileDialog::getSaveFileName(
         this,
         "Сохранить проект",
-        QDir::homePath() + "/проект.oop",
+        QDir::currentPath() + "/project.oop",
         "Файлы проекта (*.oop);;Все файлы (*)"
         );
 
@@ -479,14 +593,13 @@ void MainWindow::saveProject() {
         return;
     }
 
-    // Добавляем расширение если его нет
     if (!filename.endsWith(".oop", Qt::CaseInsensitive)) {
         filename += ".oop";
     }
 
     if (storage.saveToFile(filename.toStdString())) {
         QMessageBox::information(this, "Сохранение",
-                                 QString("Проект сохранён в файл:\n%1").arg(filename));
+                                 QString("Проект сохранён:\n%1").arg(filename));
     } else {
         QMessageBox::warning(this, "Ошибка", "Не удалось сохранить проект");
     }
@@ -496,7 +609,7 @@ void MainWindow::loadProject() {
     QString filename = QFileDialog::getOpenFileName(
         this,
         "Загрузить проект",
-        QDir::homePath(),
+        QDir::currentPath(),
         "Файлы проекта (*.oop);;Все файлы (*)"
         );
 
@@ -507,8 +620,15 @@ void MainWindow::loadProject() {
     if (storage.loadFromFile(filename.toStdString())) {
         update();
         QMessageBox::information(this, "Загрузка",
-                                 QString("Проект загружен из файла:\n%1").arg(filename));
+                                 QString("Проект загружен:\n%1").arg(filename));
     } else {
-        QMessageBox::warning(this, "Ошибка", "Не удалось загрузить проект");
+        QMessageBox::warning(this, "Ошибка",
+                             QString("Не удалось загрузить проект:\n%1\nПроверьте файл.").arg(filename));
+    }
+}
+
+void MainWindow::updateTreeView() {
+    if (objectTree) {
+        objectTree->update("manual_update");
     }
 }
