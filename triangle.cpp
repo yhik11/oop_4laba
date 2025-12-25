@@ -10,7 +10,7 @@ void Triangle::draw(QPainter& painter) const {
             << QPoint(x - size/2, y + size/2)  // Левая нижняя
             << QPoint(x + size/2, y + size/2); // Правая нижняя
 
-    painter.setBrush(selected ? QColor(200, 150, 255) : color);
+    painter.setBrush(selected ? QColor(255, 200, 100) : color);
     painter.setPen(QPen(Qt::black, 1));
     painter.drawPolygon(polygon);
 }
@@ -33,5 +33,11 @@ void Triangle::resize(float scale) {
     size = std::max(10, std::min(200, (int)(size * scale)));
 }
 
+#include <fstream>
 
+void Triangle::save(std::ofstream& out) const {
+    out << getTypeId() << " " << x << " " << y << " ";
+    out << color.red() << " " << color.green() << " " << color.blue() << " ";
+    out << size << "\n";
+}
 

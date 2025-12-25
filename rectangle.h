@@ -14,10 +14,12 @@ public:
     void draw(QPainter& painter) const override;
     bool contains(int mx, int my) const override;
     QRect getBounds() const override;
-
+    void resize(float scale) override;
     int getWidth() const { return width; }
     int getHeight() const { return height; }
     void setSize(int w, int h) { width = w; height = h; }
+    int getTypeId() const override { return 2; }
+    void save(std::ofstream& out) const override;
 };
 
 #endif

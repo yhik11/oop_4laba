@@ -14,9 +14,13 @@ public:
     void draw(QPainter& painter) const override;
     bool contains(int mx, int my) const override;
     QRect getBounds() const override;
+    void resize(float scale) override;
 
     int getRadius() const { return radius; }
     void setRadius(int r) { radius = r; }
+
+    int getTypeId() const override { return 1; }
+    void save(std::ofstream& out) const override;
 };
 
 #endif

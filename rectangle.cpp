@@ -5,7 +5,7 @@ Rectangle::Rectangle(int x, int y, int width, int height, const QColor& color)
 }
 
 void Rectangle::draw(QPainter& painter) const {
-    painter.setBrush(selected ? QColor(150, 200, 100) : color);
+    painter.setBrush(selected ? QColor(255, 200, 100) : color);
     painter.setPen(QPen(Qt::black, 1));
     painter.drawRect(x - width/2, y - height/2, width, height);
 }
@@ -21,4 +21,12 @@ QRect Rectangle::getBounds() const {
 void Rectangle::resize(float scale) {
     width = std::max(10, std::min(300, (int)(width * scale)));
     height = std::max(10, std::min(300, (int)(height * scale)));
+}
+
+#include <fstream>
+
+void Rectangle::save(std::ofstream& out) const {
+    out << getTypeId() << " " << x << " " << y << " ";
+    out << color.red() << " " << color.green() << " " << color.blue() << " ";
+    out << width << " " << height << "\n";
 }
